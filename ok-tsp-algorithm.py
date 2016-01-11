@@ -4,6 +4,8 @@ import argparse
 
 from random import randint
 
+from tsp import *
+
 argparser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter)
 argparser.description = " _____                   _ _ _\n" \
                         "|_   _|                 | | (_)            \n" \
@@ -64,6 +66,11 @@ def main():
         generate_random_graph()
     else:
         parse_distances()
+
+    load_graph(graph)
+    print("Using BruteForce algorithm")
+    brute_force()
+
 
 
 if __name__ == "__main__":

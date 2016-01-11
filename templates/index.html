@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <title>Network | Sizing</title>
+
+    <style type="text/css">
+        html, body {
+        font: 10pt arial;
+        }
+        #mynetwork {
+        width: 600px;
+        height: 600px;
+        border: 1px solid lightgray;
+        }
+    </style>
+
+    <script type="text/javascript" src="vis.js"></script>
+    <link href="vis.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript">
+        var nodes = null;
+        var edges = null;
+        var network = null;
+
+        function draw() {
+          // create people.
+          // value corresponds with the age of the person
+          nodes = [
+            {{nodes|safe}}
+          ];
+
+          // create connections between people
+          // value corresponds with the amount of contact between two people
+          edges = [
+            {{edges|safe}}
+          ];
+
+          // Instantiate our network object.
+          var container = document.getElementById('mynetwork');
+          var data = {
+            nodes: nodes,
+            edges: edges
+          };
+          var options = {
+            edges: {
+              smooth: true
+            }
+          };
+          network = new vis.Network(container, data, options);
+        }
+
+
+
+
+    </script>
+</head>
+<body onload="draw()">
+<p>
+    Scale nodes and edges depending on their value. Hover over the edges to get a popup with more information.
+</p>
+<div id="mynetwork"></div>
+</body>
+</html>

@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
-
+import webbrowser
 from random import randint
 
 from tsp import *
+
+from flask import Flask, render_template, send_from_directory, request
+
+app = Flask(__name__)
 
 argparser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter)
 argparser.description = " _____                   _ _ _\n" \
@@ -41,16 +45,26 @@ args = argparser.parse_args()
 distances = args.distances
 graph_size = args.nodes
 graph = []
+nodes = ""
+edges = ""
 
 
 def parse_distances():
-    global graph
+    global graph, nodes, edges
+    nodes = ""
+    edges = ""
     graph = [[0 for x in range(graph_size)] for x in range(graph_size)]
     for i in range(graph_size):
+        nodes += "{id: " + str(i) + ",  label: '" + str(i) + "' },"
         for j in range(i + 1, graph_size):
             value = distances.pop(0)
             graph[i][j] = value
             graph[j][i] = value
+            edges += "{from: " + str(i) + ", to: " + str(j) + ", label: '" + str(
+                    value) + " km'},"
+
+    nodes = nodes[:-1]
+    edges = edges[:-1]
 
 
 def generate_random_graph():
@@ -59,6 +73,31 @@ def generate_random_graph():
     global distances
     distances = [randint(1, 20) for x in range(edges)]
     parse_distances()
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
+
+
+@app.route('/')
+def index():
+    return render_template('index.html', edges=edges, nodes=nodes)
+
+
+@app.route('/<path:file>')
+def get_file(file):
+    filename = file
+    cache_timeout = app.get_send_file_max_age(filename)
+    return send_from_directory(app.template_folder, filename,
+                               cache_timeout=cache_timeout)
 
 
 def main():
@@ -71,6 +110,10 @@ def main():
     print("Using BruteForce algorithm")
     brute_force()
 
+
+    url = "http://127.0.0.1:8000"
+    webbrowser.open_new_tab(url)
+    app.run(port=8000)
 
 
 if __name__ == "__main__":

@@ -4,9 +4,9 @@ import argparse
 import webbrowser
 from random import randint
 
-from tsp import *
-
 from flask import Flask, render_template, send_from_directory, request
+
+from tsp import *
 
 app = Flask(__name__)
 
@@ -54,24 +54,23 @@ def parse_distances():
     nodes = ""
     edges = ""
     graph = [[0 for x in range(graph_size)] for x in range(graph_size)]
-    for i in range(graph_size):
-        nodes += "{id: " + str(i) + ",  label: '" + str(i) + "' },"
+    for i in range(0, graph_size):
+        if i == 0:
+            nodes += "{id: 0,  label: '0', color: '#F22613'},"
+        else:
+            nodes += "{id: " + str(i) + ",  label: '" + str(i) + "' },"
         for j in range(i + 1, graph_size):
             value = distances.pop(0)
             graph[i][j] = value
             graph[j][i] = value
-            edges += "{from: " + str(i) + ", to: " + str(j) + ", label: '" + str(
-                    value) + " km'},"
-
     nodes = nodes[:-1]
-    edges = edges[:-1]
 
 
 def generate_random_graph():
-    edges = (graph_size * (graph_size - 1)) / 2
-    edges = int(round(edges))
+    edges_count = (graph_size * (graph_size - 1)) / 2
+    edges_count = int(round(edges_count))
     global distances
-    distances = [randint(1, 20) for x in range(edges)]
+    distances = [randint(1, 20) for x in range(edges_count)]
     parse_distances()
 
 
@@ -101,6 +100,7 @@ def get_file(file):
 
 
 def main():
+    global edges
     if args.distances is None:
         generate_random_graph()
     else:
@@ -108,8 +108,8 @@ def main():
 
     load_graph(graph)
     print("Using BruteForce algorithm")
-    brute_force()
-
+    edges = brute_force()
+    edges = edges[:-1]
 
     url = "http://127.0.0.1:8000"
     webbrowser.open_new_tab(url)

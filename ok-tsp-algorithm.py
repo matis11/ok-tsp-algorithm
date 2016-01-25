@@ -143,9 +143,9 @@ def main():
     edges4 = heuristic("RANDOM")
     edges4[0] = edges4[0][:-1]
 
-    url = "http://127.0.0.1:8000"
+    url = "http://0.0.0.0:8000"
     webbrowser.open_new_tab(url)
-    app.run(port=8000)
+    app.run(port=8000, host="0.0.0.0")
 
 
 if __name__ == "__main__":

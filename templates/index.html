@@ -7,36 +7,42 @@
         html, body {
         font: 10pt arial;
         }
-        #mynetwork {
-        width: 600px;
-        height: 600px;
+        .graph {
+        width: 400px;
+        height: 400px;
         border: 1px solid lightgray;
         }
     </style>
 
     <script type="text/javascript" src="vis.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="vis.css" rel="stylesheet" type="text/css"/>
 
     <script type="text/javascript">
         var nodes = null;
         var edges = null;
-        var network = null;
+        var bruteforce = null;
+        
+        var nodes2 = null;
+        var edges2 = null;
+        var heurtistic_max = null;
+                
+        var nodes3 = null;
+        var edges3 = null;
+        var heurtistic_min = null;
+        
+        var nodes4 = null;
+        var edges4 = null;
+        var heurtistic_random = null;
 
         function draw() {
-          // create people.
-          // value corresponds with the age of the person
           nodes = [
             {{nodes|safe}}
           ];
-
-          // create connections between people
-          // value corresponds with the amount of contact between two people
           edges = [
             {{edges|safe}}
           ];
-
-          // Instantiate our network object.
-          var container = document.getElementById('mynetwork');
+          var container = document.getElementById('bruteforce');
           var data = {
             nodes: nodes,
             edges: edges
@@ -44,22 +50,58 @@
           var options = {
             edges:{
                 smooth: true
-            }
+            },
+            layout:{randomSeed:2}
           }
-          network = new vis.Network(container, data, options);
+
+          bruteforce = new vis.Network(container, data, options);
+          
+          heurtistic_max = new vis.Network(document.getElementById('heuristic_max'),
+           {nodes:[{{nodes|safe}}], edges:[{{edges2|safe}}],},
+            {edges:{smooth: true},layout:{randomSeed:2}}
+            );
+            
+          heurtistic_min = new vis.Network(document.getElementById('heuristic_min'),
+           {nodes:[{{nodes|safe}}], edges:[{{edges3|safe}}],},
+            {edges:{smooth: true},layout:{randomSeed:2}}
+            );
+
+
+          heurtistic_random = new vis.Network(document.getElementById('heuristic_random'),
+           {nodes:[{{nodes|safe}}], edges:[{{edges4|safe}}],},
+            {edges:{smooth: true},layout:{randomSeed:2}}
+            );
         }
-
-
-
-
-
-
     </script>
 </head>
 <body onload="draw()">
-<p>
-    Scale nodes and edges depending on their value. Hover over the edges to get a popup with more information.
-</p>
-<div id="mynetwork"></div>
+<div class="row">
+    <div class="col-md-5 col-md-offset-1">
+        <h3>BruteForce algorithm</h3>
+        <span>Time: {{time|safe}}</span>
+        <span>Path: {{summary|safe}}</span>
+        <div id="bruteforce" class="graph"></div>
+    </div>
+    <div class="col-md-6">
+        <h3>Heuristic Max algorithm</h3>
+        <span>Time: {{time2|safe}}</span>
+        <span>Path: {{summary2|safe}}</span>
+        <div id="heuristic_max" class="graph"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5 col-md-offset-1">
+        <h3>Heuristic Min algorithm</h3>
+        <span>Time: {{time3|safe}}</span>
+        <span>Path: {{summary3|safe}}</span>
+        <div id="heuristic_min" class="graph"></div>
+    </div>
+    <div class="col-md-6">
+        <h3>Heuristic Random algorithm</h3>
+        <span>Time: {{time4|safe}}</span>
+        <span>Path: {{summary4|safe}}</span>
+        <div id="heuristic_random" class="graph"></div>
+    </div>
+</div>
 </body>
 </html>

@@ -6,7 +6,8 @@ from random import randint
 
 from flask import Flask, render_template, send_from_directory, request
 
-from tsp import *
+from brute_force import *
+from heuristic import *
 
 app = Flask(__name__)
 
@@ -46,7 +47,10 @@ distances = args.distances
 graph_size = args.nodes
 graph = []
 nodes = ""
-edges = ""
+edges = []
+edges2 = []
+edges3 = []
+edges4 = []
 
 
 def parse_distances():
@@ -88,7 +92,20 @@ def shutdown():
 
 @app.route('/')
 def index():
-    return render_template('index.html', edges=edges, nodes=nodes)
+    return render_template('index.html',
+                           edges=edges[0],
+                           edges2=edges2[0],
+                           edges3=edges3[0],
+                           edges4=edges4[0],
+                           summary=edges[1],
+                           summary2=edges2[1],
+                           summary3=edges3[1],
+                           summary4=edges4[1],
+                           time=edges[2],
+                           time2=edges2[2],
+                           time3=edges3[2],
+                           time4=edges4[2],
+                           nodes=nodes)
 
 
 @app.route('/<path:file>')
@@ -100,16 +117,31 @@ def get_file(file):
 
 
 def main():
-    global edges
+    global edges, edges2, edges3, edges4
     if args.distances is None:
         generate_random_graph()
     else:
         parse_distances()
 
-    load_graph(graph)
+    bf_load_graph(graph)
     print("Using BruteForce algorithm")
     edges = brute_force()
-    edges = edges[:-1]
+    edges[0] = edges[0][:-1]
+
+    hm_load_graph(graph)
+    print("Using HeuristicMax algorithm")
+    edges2 = heuristic("MAX")
+    edges2[0] = edges2[0][:-1]
+
+    hm_load_graph(graph)
+    print("Using HeuristicMin algorithm")
+    edges3 = heuristic("MIN")
+    edges3[0] = edges3[0][:-1]
+
+    hm_load_graph(graph)
+    print("Using HeuristicRandom algorithm")
+    edges4 = heuristic("RANDOM")
+    edges4[0] = edges4[0][:-1]
 
     url = "http://127.0.0.1:8000"
     webbrowser.open_new_tab(url)

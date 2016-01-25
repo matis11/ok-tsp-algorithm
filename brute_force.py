@@ -14,7 +14,7 @@ v0 = 0
 max_length = sys.maxsize
 
 
-def load_graph(_graph):
+def bf_load_graph(_graph):
     global graph, size
     graph = _graph
     size = len(graph)
@@ -68,7 +68,7 @@ def brute_force():
             path[s1[i + 1]][s1[i]] = "rev-path"
         print("suma = " + str(max_length))
     print("time = " + str(time))
-    return create_paths()
+    return [create_paths(), max_length, time]
 
 
 def create_paths():

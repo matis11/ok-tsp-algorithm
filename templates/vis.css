@@ -1292,12 +1292,8 @@ div.vis-color-picker input.vis-range {
   height:20px;
 }
 
-/* TODO: is this redundant?
-div.vis-color-picker input.vis-range-brightness {
-  width: 289px !important;
+.algorithm {
+    width:400px;
+    height:400px;
+    display: inline-block;
 }
-
-
-div.vis-color-picker input.vis-saturation-range {
-  width: 289px !important;
-}*/
